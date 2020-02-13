@@ -33,7 +33,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RunManager">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -61,10 +61,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="push it" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="618" y="163" key="CommitChangelistDialog2" timestamp="1581632150434">
+    <state x="618" y="163" key="CommitChangelistDialog2" timestamp="1581632260409">
       <screen x="0" y="23" width="2048" height="1075" />
     </state>
-    <state x="618" y="163" key="CommitChangelistDialog2/0.23.2048.1075@0.23.2048.1075" timestamp="1581632150434" />
+    <state x="618" y="163" key="CommitChangelistDialog2/0.23.2048.1075@0.23.2048.1075" timestamp="1581632260409" />
     <state width="2006" height="296" key="GridCell.Tab.0.bottom" timestamp="1581632168189">
       <screen x="0" y="23" width="2048" height="1075" />
     </state>
@@ -81,13 +81,14 @@
       <screen x="0" y="23" width="2048" height="1075" />
     </state>
     <state width="2006" height="296" key="GridCell.Tab.0.right/0.23.2048.1075@0.23.2048.1075" timestamp="1581632168188" />
-    <state x="533" y="199" key="SettingsEditor" timestamp="1581632249794">
-      <screen x="0" y="23" width="2048" height="1075" />
+    <state x="668" y="169" key="SettingsEditor" timestamp="1581632320838">
+      <screen x="0" y="23" width="1680" height="868" />
     </state>
     <state x="533" y="199" key="SettingsEditor/0.23.2048.1075@0.23.2048.1075" timestamp="1581632249794" />
-    <state x="624" y="289" key="Vcs.Push.Dialog.v2" timestamp="1581632156083">
+    <state x="668" y="169" key="SettingsEditor/1680.-82.1680.1027/0.23.1680.868@0.23.1680.868" timestamp="1581632320838" />
+    <state x="624" y="289" key="Vcs.Push.Dialog.v2" timestamp="1581632264137">
       <screen x="0" y="23" width="2048" height="1075" />
     </state>
-    <state x="624" y="289" key="Vcs.Push.Dialog.v2/0.23.2048.1075@0.23.2048.1075" timestamp="1581632156083" />
+    <state x="624" y="289" key="Vcs.Push.Dialog.v2/0.23.2048.1075@0.23.2048.1075" timestamp="1581632264137" />
   </component>
 </project>
