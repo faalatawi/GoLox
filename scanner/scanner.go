@@ -46,13 +46,18 @@ func NewScanner(source string) *Scanner {
 	return &loxScan
 }
 
-// func (scan *Scanner) ScanTokens() []token.Token {
-// 	for !scan.isAtEnd(){
-// 		scan.start = scan.current
-// 		scan.scanToken()
-// 	}
+func (scan *Scanner) ScanTokens() []token.Token {
+	// for !scan.isAtEnd() {
+	// 	scan.start = scan.current
+	// 	scan.scanToken()
+	// }
 
-// }
+	t := token.Token{Type: token.EOF, Lexeme: "", Literal: nil, Line: scan.line}
+
+	scan.Tokens = append(scan.Tokens, t)
+
+	return scan.Tokens
+}
 
 func (scan *Scanner) advance() string {
 	c := scan.source[scan.current]
@@ -70,5 +75,11 @@ func Test() {
 
 	fmt.Println("c:", c)
 	fmt.Println(scan)
+
+	tList := scan.ScanTokens()
+
+	for _, t := range tList {
+		fmt.Println(t.ToString())
+	}
 
 }

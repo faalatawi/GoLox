@@ -1,6 +1,10 @@
 package main
 
-import "GoLox/scanner"
+import (
+	"GoLox/scanner"
+	"fmt"
+	"go/token"
+)
 
 func main() {
 	// myTok := token.Token{
@@ -11,4 +15,6 @@ func main() {
 	// }
 	// fmt.Println(myTok.ToString())
 	scanner.Test()
+
+	fmt.Println(token.EOF)
 }
