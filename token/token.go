@@ -2,12 +2,12 @@ package token
 
 import "fmt"
 
-// TokenType represents a set of lexical tokens of the Lox programming language.
-type TokenType int
+// Type represents a set of lexical tokens of the Lox programming language.
+type Type int
 
 // TokenType set elements, all the lexems for the language
 const (
-	EOF TokenType = iota
+	EOF Type = iota
 
 	// single characters
 	LEFT_PAREN
@@ -58,14 +58,16 @@ const (
 	WHILE
 )
 
+// Token is a struct
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Lexeme  string
-	Literal fmt.Stringer
+	Literal interface{}
 	Line    int
 }
 
-func (tok *Token) toString() string {
-	return fmt.Sprintf("Token [Type : %v, Lexeme : %s, Literal : %s, Line : %d]",
+// ToString is a method
+func (tok Token) ToString() string {
+	return fmt.Sprintf("Token [Type : %v, Lexeme : %s, Literal : %v, Line : %d]",
 		tok.Type, tok.Lexeme, tok.Literal, tok.Line)
 }

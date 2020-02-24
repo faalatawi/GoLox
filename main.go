@@ -1,26 +1,14 @@
 package main
 
-import (
-	"GoLox/token"
-	"fmt"
-)
-
-type Number float64
-
-func (n Number) String() string {
- 	return fmt.Sprint(float64(n))
-}
+import "GoLox/scanner"
 
 func main() {
-	fmt.Println("Faisal")
-
-	myTok := &token.Token{
-		Type:    token.CLASS,
-		Lexeme:  "class",
-		Literal: Number(12),
-		Line:    0,
-	}
-
-	fmt.Println(myTok.toString())
-
+	// myTok := token.Token{
+	// 	Type:    token.CLASS,
+	// 	Lexeme:  "class",
+	// 	Literal: "fafa",
+	// 	Line:    0,
+	// }
+	// fmt.Println(myTok.ToString())
+	scanner.Test()
 }
