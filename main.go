@@ -11,7 +11,5 @@ import (
 )
 
 func main() {
-
 	scanner.Test()
-
 }
