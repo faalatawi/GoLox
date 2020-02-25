@@ -1,2 +1,2 @@
 # GoLox
- Lox in Go
+Implementation for [lox](https://craftinginterpreters.com/) programming language in Go

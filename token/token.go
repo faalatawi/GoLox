@@ -1,3 +1,8 @@
+/*
+ Copyright (c) 2020 Faisal Alatawi. All rights reserved
+ Using this source code is governed by an MIT license
+ you can find it in the LICENSE file.
+*/
 package token
 
 import "fmt"
@@ -58,6 +63,52 @@ const (
 	WHILE
 )
 
+var typeNames = []string{
+	"EOF",
+	"LEFT_PAREN",
+	"RIGHT_PAREN",
+	"LEFT_BRACE",
+	"RIGHT_BRACE",
+	"COMMA",
+	"DOT",
+	"SEMICOLON",
+
+	"BANG",
+	"EQUAL",
+	"GREATER",
+	"LESS",
+	"MINUS",
+	"PLUS",
+	"SLASH",
+	"STAR",
+
+	"BANG_EQUAL",
+	"EQUAL_EQUAL",
+	"GREATER_EQUAL",
+	"LESS_EQUAL",
+
+	"IDENTIFIER",
+	"STRING",
+	"NUMBER",
+
+	"AND",
+	"CLASS",
+	"ELSE",
+	"FALSE",
+	"FUN",
+	"FOR",
+	"IF",
+	"NIL",
+	"OR",
+	"PRINT",
+	"RETURN",
+	"SUPER",
+	"THIS",
+	"TRUE",
+	"VAR",
+	"WHILE",
+}
+
 // Token is a struct
 type Token struct {
 	Type    Type
@@ -68,6 +119,6 @@ type Token struct {
 
 // ToString is a method
 func (tok Token) ToString() string {
-	return fmt.Sprintf("Token [Type : %v, Lexeme : %s, Literal : %v, Line : %d]",
-		tok.Type, tok.Lexeme, tok.Literal, tok.Line)
+	return fmt.Sprintf("Token [Type : %s, Lexeme : %s, Literal : %v, Line : %d]",
+		typeNames[tok.Type], tok.Lexeme, tok.Literal, tok.Line)
 }

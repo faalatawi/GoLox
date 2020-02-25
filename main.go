@@ -1,20 +1,17 @@
+/*
+ Copyright (c) 2020 Faisal Alatawi. All rights reserved
+ Using this source code is governed by an MIT license
+ you can find it in the LICENSE file.
+*/
+
 package main
 
 import (
 	"GoLox/scanner"
-	"fmt"
-	"go/token"
 )
 
 func main() {
-	// myTok := token.Token{
-	// 	Type:    token.CLASS,
-	// 	Lexeme:  "class",
-	// 	Literal: "fafa",
-	// 	Line:    0,
-	// }
-	// fmt.Println(myTok.ToString())
+
 	scanner.Test()
 
-	fmt.Println(token.EOF)
 }
