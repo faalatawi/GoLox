@@ -7,9 +7,10 @@
 package main
 
 import (
-	"GoLox/scanner"
+	"GoLox/ast"
 )
 
 func main() {
-	scanner.Test()
+	// scanner.Test()
+	ast.Test()
 }
