@@ -5,28 +5,25 @@ import (
 	"fmt"
 )
 
-//ASTPrinter is  empty visitor
-type ASTPrinter struct{}
-
-func (v ASTPrinter) Print(e Expr) string {
-	s, _ := e.Accept(v).(string)
-	return s
+// Print to print the AST
+func Print(e Expr) {
+	fmt.Println(e.print()) // tree head
 }
 
 // ==============================================
 // Implementing print method for all grammer
 
-func (v ASTPrinter) visitBinary(b *Binary) interface{} {
+func (b Binary) print() string {
 	exprs := []Expr{b.left, b.right}
-	return v.parenthesize(b.operator.Lexeme, exprs)
+	return parenthesize(b.operator.Lexeme, exprs)
 }
 
-func (v ASTPrinter) visitGrouping(g *Grouping) interface{} {
+func (g Grouping) print() string {
 	exprs := []Expr{g.expression}
-	return v.parenthesize("group", exprs)
+	return parenthesize("group", exprs)
 }
 
-func (v ASTPrinter) visitLiteral(l *Literal) interface{} {
+func (l Literal) print() string {
 	switch l.value.(type) {
 	case nil:
 		return "nil"
@@ -41,17 +38,17 @@ func (v ASTPrinter) visitLiteral(l *Literal) interface{} {
 	}
 }
 
-func (v ASTPrinter) visitUnary(u *Unary) interface{} {
+func (u Unary) print() string {
 	exprs := []Expr{u.right}
-	return v.parenthesize(u.operator.Lexeme, exprs)
+	return parenthesize(u.operator.Lexeme, exprs)
 }
 
-func (v ASTPrinter) parenthesize(name string, exprs []Expr) string {
+func parenthesize(name string, exprs []Expr) string {
 	out := "(" + name
 
 	for _, e := range exprs {
 		out += " "
-		out += v.Print(e)
+		out += e.print()
 	}
 
 	out += ")"
@@ -59,15 +56,15 @@ func (v ASTPrinter) parenthesize(name string, exprs []Expr) string {
 }
 
 func Test() {
-	expression := &Binary{
-		left: &Unary{
+	expression := Binary{
+		left: Unary{
 			operator: token.Token{
 				Type:    token.MINUS,
 				Lexeme:  "-",
 				Literal: nil,
 				Line:    1,
 			},
-			right: &Literal{value: 123.0},
+			right: Literal{value: 123.0},
 		},
 		operator: token.Token{
 			Type:    token.STAR,
@@ -75,13 +72,10 @@ func Test() {
 			Literal: nil,
 			Line:    1,
 		},
-		right: &Grouping{
-			expression: &Literal{value: 45.67},
+		right: Grouping{
+			expression: Literal{value: 45.67},
 		},
 	}
 
-	printer := ASTPrinter{}
-
-	fmt.Println(printer.Print(expression))
-
+	Print(expression)
 }
