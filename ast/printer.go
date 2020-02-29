@@ -5,25 +5,28 @@ import (
 	"fmt"
 )
 
-// Print to print the AST
-func Print(e Expr) {
-	fmt.Println(e.print()) // tree head
+//ASTPrinter is  empty visitor
+type ASTPrinter struct{}
+
+func (v ASTPrinter) Print(e Expr) string {
+	s, _ := e.Accept(v).(string)
+	return s
 }
 
 // ==============================================
 // Implementing print method for all grammer
 
-func (b Binary) print() string {
+func (v ASTPrinter) visitBinary(b Binary) interface{} {
 	exprs := []Expr{b.left, b.right}
-	return parenthesize(b.operator.Lexeme, exprs)
+	return v.parenthesize(b.operator.Lexeme, exprs)
 }
 
-func (g Grouping) print() string {
+func (v ASTPrinter) visitGrouping(g Grouping) interface{} {
 	exprs := []Expr{g.expression}
-	return parenthesize("group", exprs)
+	return v.parenthesize("group", exprs)
 }
 
-func (l Literal) print() string {
+func (v ASTPrinter) visitLiteral(l Literal) interface{} {
 	switch l.value.(type) {
 	case nil:
 		return "nil"
@@ -38,17 +41,17 @@ func (l Literal) print() string {
 	}
 }
 
-func (u Unary) print() string {
+func (v ASTPrinter) visitUnary(u Unary) interface{} {
 	exprs := []Expr{u.right}
-	return parenthesize(u.operator.Lexeme, exprs)
+	return v.parenthesize(u.operator.Lexeme, exprs)
 }
 
-func parenthesize(name string, exprs []Expr) string {
+func (v ASTPrinter) parenthesize(name string, exprs []Expr) string {
 	out := "(" + name
 
 	for _, e := range exprs {
 		out += " "
-		out += e.print()
+		out += v.Print(e)
 	}
 
 	out += ")"
@@ -77,5 +80,8 @@ func Test() {
 		},
 	}
 
-	Print(expression)
+	printer := ASTPrinter{}
+
+	fmt.Println(printer.Print(expression))
+
 }
