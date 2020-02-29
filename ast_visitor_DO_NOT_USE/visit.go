@@ -1,4 +1,4 @@
-package main
+package ast_visitor_DO_NOT_USE
 
 import "fmt"
 
@@ -56,7 +56,7 @@ func (p printVisitor) visitForChildB(c *ChildB) {
 	fmt.Println("the child:", c.getType())
 }
 
-func main() {
+func Test() {
 	myA := &ChildA{name: "aaa"}
 	myB := &ChildB{name: "bbb"}
 
@@ -64,5 +64,4 @@ func main() {
 
 	myA.accept(myV)
 	myB.accept(myV)
-
 }
