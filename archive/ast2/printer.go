@@ -1,4 +1,4 @@
-package ast
+package ast2
 
 import (
 	"GoLox/token"
@@ -7,38 +7,40 @@ import (
 
 // Print to print the AST
 func Print(e Expr) string {
-	switch t := e.(type) {
-
+	switch e.(type) {
 	case Binary:
-		exprs := []Expr{t.Left, t.Right}
-		return parenthesize(t.Operator.Lexeme, exprs)
-
+		b := e.(Binary)
+		exprs := []Expr{b.left, b.right}
+		return parenthesize(b.operator.Lexeme, exprs)
 	case Grouping:
-		exprs := []Expr{t.Expression}
+		g := e.(Grouping)
+		exprs := []Expr{g.expression}
 		return parenthesize("group", exprs)
-
 	case Literal:
-		switch t.Value.(type) {
+		l := e.(Literal)
+		switch l.value.(type) {
 		case nil:
 			return "nil"
 		case string:
-			s, _ := t.Value.(string)
+			s, _ := l.value.(string)
 			return s
 		case float64, int, float32:
-			f, _ := t.Value.(float64)
+			f, _ := l.value.(float64)
 			return fmt.Sprintf("%f", f)
 		default:
 			return "error"
 		}
-
 	case Unary:
-		exprs := []Expr{t.Right}
-		return parenthesize(t.Operator.Lexeme, exprs)
-
+		u := e.(Unary)
+		exprs := []Expr{u.right}
+		return parenthesize(u.operator.Lexeme, exprs)
 	default:
 		return "error"
 	}
 }
+
+// ==============================================
+// Implementing print method for all grammer
 
 func parenthesize(name string, exprs []Expr) string {
 	out := "(" + name
@@ -54,24 +56,25 @@ func parenthesize(name string, exprs []Expr) string {
 
 func Test() {
 	expression := Binary{
-		Left: Unary{
-			Operator: token.Token{
+		left: Unary{
+			operator: token.Token{
 				Type:    token.MINUS,
 				Lexeme:  "-",
 				Literal: nil,
 				Line:    1,
 			},
-			Right: Literal{Value: 123.0},
+			right: Literal{value: 123.0},
 		},
-		Operator: token.Token{
+		operator: token.Token{
 			Type:    token.STAR,
 			Lexeme:  "*",
 			Literal: nil,
 			Line:    1,
 		},
-		Right: Grouping{
-			Expression: Literal{Value: 45.67},
+		right: Grouping{
+			expression: Literal{value: 45.67},
 		},
 	}
+
 	fmt.Println(Print(expression))
 }

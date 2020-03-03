@@ -8,23 +8,36 @@ import (
 // LoxInterpreter is an empty struct
 type LoxInterpreter struct{}
 
-func (inter LoxInterpreter) Interpret(e ast.Expr) {
-	value := e.Accept(inter)
-	fmt.Println(value)
-}
+func Interpret(e ast.Expr) string {
+	switch t := e.(type) {
 
-func (inter LoxInterpreter) visitBinary(b ast.Binary) interface{} {
-	return nil
-}
+	case ast.Binary:
+		exprs := []ast.Expr{t.left, t.right}
+		return parenthesize(t.operator.Lexeme, exprs)
 
-func (inter LoxInterpreter) visitGrouping(g ast.Grouping) interface{} {
-	return nil
-}
+	case ast.Grouping:
+		exprs := []Expr{t.expression}
+		return parenthesize("group", exprs)
 
-func (inter LoxInterpreter) visitLiteral(l ast.Literal) interface{} {
-	return nil
-}
+	case ast.Literal:
+		switch t.value.(type) {
+		case nil:
+			return "nil"
+		case string:
+			s, _ := t.value.(string)
+			return s
+		case float64, int, float32:
+			f, _ := t.value.(float64)
+			return fmt.Sprintf("%f", f)
+		default:
+			return "error"
+		}
 
-func (inter LoxInterpreter) visitUnary(u ast.Unary) interface{} {
-	return nil
+	case ast.Unary:
+		exprs := []Expr{t.right}
+		return parenthesize(t.operator.Lexeme, exprs)
+
+	default:
+		return "error"
+	}
 }

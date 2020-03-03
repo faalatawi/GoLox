@@ -6,9 +6,9 @@
 
 package main
 
-import "GoLox/ast_visitor_DO_NOT_USE"
+import "GoLox/ast"
 
 func main() {
 	// scanner.Test()
-	ast_visitor_DO_NOT_USE.Test()
+	ast.Test()
 }

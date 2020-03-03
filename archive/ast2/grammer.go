@@ -1,24 +1,24 @@
-package ast
+package ast2
 
 import "GoLox/token"
 
 type Expr interface{}
 
 type Binary struct {
-	Left     Expr
-	Operator token.Token
-	Right    Expr
+	left     Expr
+	operator token.Token
+	right    Expr
 }
 
 type Grouping struct {
-	Expression Expr
+	expression Expr
 }
 
 type Literal struct {
-	Value interface{}
+	value interface{}
 }
 
 type Unary struct {
-	Operator token.Token
-	Right    Expr
+	operator token.Token
+	right    Expr
 }
