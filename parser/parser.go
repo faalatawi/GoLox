@@ -2,15 +2,18 @@ package parser
 
 import (
 	"GoLox/ast"
+	LoxErr "GoLox/error"
 	"GoLox/token"
 	"errors"
 )
 
+// Parser is Lox parser
 type Parser struct {
 	tokens  []token.Token
 	current int
 }
 
+// New to create new parser
 func New(toks []token.Token) Parser {
 	return Parser{
 		tokens:  toks,
@@ -18,10 +21,11 @@ func New(toks []token.Token) Parser {
 	}
 }
 
+// Parse to Parse
 func (p Parser) Parse() ast.Expr {
 	exp, err := p.expression()
 	if err != nil {
-		// TODO:
+		LoxErr.AtToken(p.previous(), "sss")
 		return nil
 	}
 	return exp
@@ -36,14 +40,14 @@ func (p Parser) expression() (ast.Expr, error) {
 func (p Parser) equality() (ast.Expr, error) {
 	expr, err := p.comparison()
 	if err != nil {
-		return nil, errors.New(" ") // TODO:
+		return nil, err
 	}
 
 	for p.match(token.BANG_EQUAL, token.EQUAL_EQUAL) {
 		operator := p.previous()
 		right, errR := p.comparison()
 		if errR != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, errR
 		}
 		expr = ast.Binary{
 			Left:     expr,
@@ -59,14 +63,14 @@ func (p Parser) equality() (ast.Expr, error) {
 func (p Parser) comparison() (ast.Expr, error) {
 	expr, err := p.addition()
 	if err != nil {
-		return nil, errors.New(" ") // TODO:
+		return nil, err
 	}
 
 	for p.match(token.GREATER, token.GREATER_EQUAL, token.LESS, token.LESS_EQUAL) {
 		operator := p.previous()
 		right, errR := p.addition()
 		if errR != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, errR
 		}
 		expr = ast.Binary{
 			Left:     expr,
@@ -82,14 +86,14 @@ func (p Parser) comparison() (ast.Expr, error) {
 func (p Parser) addition() (ast.Expr, error) {
 	expr, err := p.multiplication()
 	if err != nil {
-		return nil, errors.New(" ") // TODO:
+		return nil, err
 	}
 
 	for p.match(token.MINUS, token.PLUS) {
 		operator := p.previous()
 		right, errR := p.multiplication()
 		if errR != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, errR
 		}
 		expr = ast.Binary{
 			Left:     expr,
@@ -105,14 +109,14 @@ func (p Parser) addition() (ast.Expr, error) {
 func (p Parser) multiplication() (ast.Expr, error) {
 	expr, err := p.unary()
 	if err != nil {
-		return nil, errors.New(" ") // TODO:
+		return nil, err
 	}
 
 	for p.match(token.SLASH, token.STAR) {
 		operator := p.previous()
 		right, errR := p.unary()
 		if errR != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, errR
 		}
 		expr = ast.Binary{
 			Left:     expr,
@@ -133,12 +137,9 @@ func (p Parser) unary() (ast.Expr, error) {
 		operator := p.previous()
 		right, errR := p.unary()
 		if errR != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, errR
 		}
-		return ast.Unary{
-			Operator: operator,
-			Right:    right,
-		}, nil
+		return ast.Unary{Operator: operator, Right: right}, nil
 	}
 
 	return p.primary()
@@ -163,11 +164,11 @@ func (p Parser) primary() (ast.Expr, error) {
 	if p.match(token.LEFT_PAREN) {
 		expr, err := p.expression()
 		if err != nil {
-			return nil, errors.New(" ") // TODO:
+			return nil, err
 		}
-		err = p.consume(token.RIGHT_PAREN)
+		_, err = p.consume(token.RIGHT_PAREN, "Expect ')' after expression.")
 		if err != nil {
-			return nil, errors.New("Expect ')' after expression.") // TODO:
+			return nil, err
 		}
 		return ast.Grouping{Expression: expr}, nil
 	}
@@ -176,6 +177,14 @@ func (p Parser) primary() (ast.Expr, error) {
 }
 
 // Helping functions
+func (p Parser) consume(tok token.Type, msg string) (token.Token, error) {
+	if p.check(tok) {
+		return p.previous(), nil
+	}
+	return p.previous(), errors.New(msg) // TODO: avoid p.previous()
+
+}
+
 func (p Parser) match(toks ...token.Type) bool {
 	for _, t := range toks {
 		if p.check(t) {
@@ -210,4 +219,17 @@ func (p *Parser) advance() token.Token {
 
 func (p Parser) previous() token.Token {
 	return p.tokens[p.current-1]
+}
+
+// Type    Type Lexeme  string Literal interface{} Line    int
+
+func Test() {
+	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
+	tok2 := token.Token{token.PLUS, "+", nil, 1}
+	tok3 := token.Token{token.NUMBER, "12", 12.0, 1}
+	tok4 := token.Token{token.EOF, "", nil, 2}
+
+	tokens := [3]token.Token{tok1, tok2, tok3, tok4}
+	
+
 }
