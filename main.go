@@ -6,9 +6,9 @@
 
 package main
 
-import "GoLox/ast"
+import "GoLox/parser"
 
 func main() {
 	// scanner.Test()
-	ast.Test()
+	parser.Test()
 }

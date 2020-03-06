@@ -5,6 +5,7 @@ import (
 	LoxErr "GoLox/error"
 	"GoLox/token"
 	"errors"
+	"fmt"
 )
 
 // Parser is Lox parser
@@ -14,30 +15,29 @@ type Parser struct {
 }
 
 // New to create new parser
-func New(toks []token.Token) Parser {
-	return Parser{
+func New(toks []token.Token) *Parser {
+	return &Parser{
 		tokens:  toks,
 		current: 0,
 	}
 }
 
 // Parse to Parse
-func (p Parser) Parse() ast.Expr {
+func (p *Parser) Parse() (ast.Expr, error) {
 	exp, err := p.expression()
 	if err != nil {
-		LoxErr.AtToken(p.previous(), "sss")
-		return nil
+		return nil, err
 	}
-	return exp
+	return exp, nil
 }
 
 // 1)  expression -> equality ;
-func (p Parser) expression() (ast.Expr, error) {
+func (p *Parser) expression() (ast.Expr, error) {
 	return p.equality()
 }
 
 // 2)  equality -> comparison ( ( "!=" | "==" ) comparison )*
-func (p Parser) equality() (ast.Expr, error) {
+func (p *Parser) equality() (ast.Expr, error) {
 	expr, err := p.comparison()
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (p Parser) equality() (ast.Expr, error) {
 }
 
 // comparison -> addition ( ( ">" | ">=" | "<" | "<=" ) addition )* ;
-func (p Parser) comparison() (ast.Expr, error) {
+func (p *Parser) comparison() (ast.Expr, error) {
 	expr, err := p.addition()
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (p Parser) comparison() (ast.Expr, error) {
 }
 
 // addition -> multiplication ( ( "-" | "+" ) multiplication )* ;
-func (p Parser) addition() (ast.Expr, error) {
+func (p *Parser) addition() (ast.Expr, error) {
 	expr, err := p.multiplication()
 	if err != nil {
 		return nil, err
@@ -106,7 +106,7 @@ func (p Parser) addition() (ast.Expr, error) {
 }
 
 //multiplication -> unary ( ( "/" | "*" ) unary )* ;
-func (p Parser) multiplication() (ast.Expr, error) {
+func (p *Parser) multiplication() (ast.Expr, error) {
 	expr, err := p.unary()
 	if err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (p Parser) multiplication() (ast.Expr, error) {
 	unary -> ( "!" | "-" ) unary
             | primary ;
 */
-func (p Parser) unary() (ast.Expr, error) {
+func (p *Parser) unary() (ast.Expr, error) {
 	if p.match(token.BANG, token.MINUS) {
 		operator := p.previous()
 		right, errR := p.unary()
@@ -146,7 +146,7 @@ func (p Parser) unary() (ast.Expr, error) {
 }
 
 // primary -> NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" ;
-func (p Parser) primary() (ast.Expr, error) {
+func (p *Parser) primary() (ast.Expr, error) {
 	if p.match(token.FALSE) {
 		return ast.Literal{Value: false}, nil
 	}
@@ -166,26 +166,27 @@ func (p Parser) primary() (ast.Expr, error) {
 		if err != nil {
 			return nil, err
 		}
-		_, err = p.consume(token.RIGHT_PAREN, "Expect ')' after expression.")
+		err = p.consume(token.RIGHT_PAREN, "Expect ')' after expression.")
 		if err != nil {
-			return nil, err
+			return nil, err // TODO:
 		}
 		return ast.Grouping{Expression: expr}, nil
 	}
 
-	return nil, errors.New("expect expression")
+	return nil, errors.New("Expect expression") // TODO:
 }
 
 // Helping functions
-func (p Parser) consume(tok token.Type, msg string) (token.Token, error) {
+func (p *Parser) consume(tok token.Type, msg string) error {
 	if p.check(tok) {
-		return p.previous(), nil
+		p.advance()
+		return nil
 	}
-	return p.previous(), errors.New(msg) // TODO: avoid p.previous()
-
+	LoxErr.AtToken(p.previous(), msg)
+	return errors.New(msg)
 }
 
-func (p Parser) match(toks ...token.Type) bool {
+func (p *Parser) match(toks ...token.Type) bool {
 	for _, t := range toks {
 		if p.check(t) {
 			p.advance()
@@ -195,18 +196,18 @@ func (p Parser) match(toks ...token.Type) bool {
 	return false
 }
 
-func (p Parser) check(t token.Type) bool {
+func (p *Parser) check(t token.Type) bool {
 	if p.isAtEnd() {
 		return false
 	}
 	return p.peek().Type == t
 }
 
-func (p Parser) peek() token.Token {
+func (p *Parser) peek() token.Token {
 	return p.tokens[p.current]
 }
 
-func (p Parser) isAtEnd() bool {
+func (p *Parser) isAtEnd() bool {
 	return p.peek().Type == token.EOF
 }
 
@@ -217,19 +218,22 @@ func (p *Parser) advance() token.Token {
 	return p.previous()
 }
 
-func (p Parser) previous() token.Token {
+func (p *Parser) previous() token.Token {
 	return p.tokens[p.current-1]
 }
 
-// Type    Type Lexeme  string Literal interface{} Line    int
-
+// Test is a func for testing
 func Test() {
 	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
 	tok2 := token.Token{token.PLUS, "+", nil, 1}
-	tok3 := token.Token{token.NUMBER, "12", 12.0, 1}
+	tok3 := token.Token{token.STRING, "\"12\"", "\"12\"", 1}
 	tok4 := token.Token{token.EOF, "", nil, 2}
 
-	tokens := [3]token.Token{tok1, tok2, tok3, tok4}
-	
+	tokens := []token.Token{tok1, tok2, tok3, tok4}
 
+	loxP := New(tokens)
+
+	exp, _ := loxP.Parse()
+
+	fmt.Println(ast.Print(exp))
 }
