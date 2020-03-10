@@ -25,7 +25,9 @@ func AtLine(line int, message string) {
 func AtToken(tok token.Token, message string) {
 	if tok.Type == token.EOF {
 		report(tok.Line, "  at end", message)
+
+	} else {
+		where := fmt.Sprintf("at '%v' ", tok.Lexeme)
+		report(tok.Line, where, message)
 	}
-	where := fmt.Sprintf("at '%v' ", tok.Lexeme)
-	report(tok.Line, where, message)
 }

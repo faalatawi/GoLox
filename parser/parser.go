@@ -1,3 +1,9 @@
+/*
+ Copyright (c) 2020 Faisal Alatawi. All rights reserved
+ Using this source code is governed by an MIT license
+ you can find it in the LICENSE file.
+*/
+
 package parser
 
 import (
@@ -182,7 +188,7 @@ func (p *Parser) consume(tok token.Type, msg string) error {
 		p.advance()
 		return nil
 	}
-	LoxErr.AtToken(p.previous(), msg)
+	LoxErr.AtToken(p.tokens[p.current], msg)
 	return errors.New(msg)
 }
 
@@ -224,12 +230,13 @@ func (p *Parser) previous() token.Token {
 
 // Test is a func for testing
 func Test() {
+	tok11 := token.Token{token.LEFT_PAREN, "(", nil, 1}
 	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
 	tok2 := token.Token{token.PLUS, "+", nil, 1}
 	tok3 := token.Token{token.STRING, "\"12\"", "\"12\"", 1}
 	tok4 := token.Token{token.EOF, "", nil, 2}
 
-	tokens := []token.Token{tok1, tok2, tok3, tok4}
+	tokens := []token.Token{tok11, tok1, tok2, tok3, tok4}
 
 	loxP := New(tokens)
 
