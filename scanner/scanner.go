@@ -17,7 +17,7 @@ import (
 type Scanner struct {
 	source  string        // source code
 	Tokens  []token.Token // tokens
-	current int
+	current int           // current index
 	start   int
 	line    int
 }
