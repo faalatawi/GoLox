@@ -63,7 +63,7 @@ const (
 	WHILE
 )
 
-var typeNames = []string{
+var TypeNames = []string{
 	"EOF",
 	"LEFT_PAREN",
 	"RIGHT_PAREN",
@@ -120,5 +120,5 @@ type Token struct {
 // ToString is a method
 func (tok Token) ToString() string {
 	return fmt.Sprintf("Token [Type : %s, Lexeme : %s, Literal : %v, Line : %d]",
-		typeNames[tok.Type], tok.Lexeme, tok.Literal, tok.Line)
+		TypeNames[tok.Type], tok.Lexeme, tok.Literal, tok.Line)
 }

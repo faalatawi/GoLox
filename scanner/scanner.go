@@ -268,7 +268,6 @@ func Test() {
 	    "fias'' // "
 
 	    class
-	    @
 	    student
 	    
 	    // this is a comment

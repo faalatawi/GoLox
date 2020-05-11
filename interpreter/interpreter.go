@@ -8,18 +8,27 @@ package interpreter
 
 import (
 	"GoLox/ast"
+	"fmt"
+
+	// loxErr "GoLox/error"
 	"GoLox/token"
 	"errors"
-	"fmt"
 )
 
-func Interpret(e ast.Expr) {
+// Interpret is : The interpreter of lox
+func Interpret(e ast.Expr) (interface{}, error) {
 	value, err := evaluate(e)
 	if err != nil {
-		// do something
+		return nil, err
 	}
-	fmt.Println(value)
+	return value, nil
 }
+
+// Check list:
+// ast.Binary
+// ast.Literal Done
+// ast.Unary Done
+// ast.Grouping Done
 
 func evaluate(e ast.Expr) (interface{}, error) {
 	switch t := e.(type) {
@@ -36,14 +45,16 @@ func evaluate(e ast.Expr) (interface{}, error) {
 	case ast.Unary:
 		right, err := evaluate(t.Right)
 		if err != nil {
-			// do something
+			return nil, err
 		}
 
 		switch t.Operator.Type {
 		case token.MINUS:
-			num, ok := right.(float64)
+			num, ok := right.(float64) // It's a number or string if string (ok = false)
 			if !ok {
-				return nil, errors.New("sksk")
+				// it won't hanppen
+				msg := fmt.Sprint("The value (\"", right, "\") can not be cast to f64!!")
+				return nil, errors.New(msg)
 			}
 			return -1 * num, nil
 
@@ -51,69 +62,76 @@ func evaluate(e ast.Expr) (interface{}, error) {
 			return !isTruthy(right), nil
 
 		}
-		return nil, nil
-
-	default:
-		return "error", errors.New("sksk")
 	}
+	return nil, nil // will Never get to this
 }
 
 func evaluateBinary(b ast.Binary) (interface{}, error) {
 	left, errL := evaluate(b.Left)
+	if errL != nil {
+		return nil, errL
+	}
+
 	right, errR := evaluate(b.Right)
-
-	if errL != nil || errR != nil {
-		return nil, errors.New("sksk")
+	if errR != nil {
+		return nil, errR
 	}
 
-	switch b.Operator.Type {
-	case token.MINUS:
-		numL, numR, err := checkNumberOperands(left, right)
+	if b.Operator.Type == token.PLUS { // TODO:
+		numL, numR, err := checkNumberOperands(b.Operator.Type, left, right)
 		if err != nil {
-			return nil, errors.New("TODO")
+			return nil, err
 		}
-		return numL - numR, nil
+		return numL + numR, nil
 
-	case token.SLASH:
-		numL, numR, err := checkNumberOperands(left, right)
+	} else {
+		numL, numR, err := checkNumberOperands(b.Operator.Type, left, right)
 		if err != nil {
-			return nil, errors.New("TODO")
+			return nil, err
 		}
-		return numL / numR, nil
+		switch b.Operator.Type {
+		case token.MINUS:
+			return numL - numR, nil
 
-	case token.STAR:
-		numL, numR, err := checkNumberOperands(left, right)
-		if err != nil {
-			return nil, errors.New("TODO")
+		case token.SLASH:
+			return numL / numR, nil
+
+		case token.STAR:
+			return numL * numR, nil
 		}
-		return numL * numR, nil
-
-	case token.PLUS:
-
 	}
-	return nil, nil
+	return nil, nil // will Never get to this
 }
 
-func checkNumberOperands(left, right interface{}) (float64, float64, error) {
+func checkNumberOperands(op token.Type, left, right interface{}) (float64, float64, error) {
 	numL, okL := left.(float64)
 	numR, okR := left.(float64)
 
-	if okL && okR {
-		return numL, numR, nil
+	if !okL && !okR {
+		msg := fmt.Sprint("Both (", left, ", ", right, ") are not numbers, the operation (", token.TypeNames[op], ") can not be performed")
+		return 0.0, 0.0, errors.New(msg)
+	} else if !okL {
+		msg := fmt.Sprint("Left exp = (", left, ") is not numbers, the operation (", token.TypeNames[op], ") can not be performed")
+		return 0.0, numR, errors.New(msg)
+	} else if !okR {
+		msg := fmt.Sprint("Right exp = (", right, ") is not numbers, the operation (", token.TypeNames[op], ")  can not be performed")
+		return numL, 0.0, errors.New(msg)
 	} else {
-		return 0.0, 0.0, errors.New("TODO")
+		return numL, numR, nil
 	}
-
 }
 
-func isTruthy(e ast.Expr) bool {
-	if e == nil {
+func isTruthy(obj interface{}) bool {
+	switch t := obj.(type) {
+	case nil:
 		return false
-	}
-
-	if t, ok := e.(bool); ok {
+	case bool:
 		return t
+	default:
+		return true
 	}
+}
 
-	return true
+func Test() {
+
 }

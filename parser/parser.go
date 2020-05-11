@@ -230,13 +230,14 @@ func (p *Parser) previous() token.Token {
 
 // Test is a func for testing
 func Test() {
-	tok11 := token.Token{token.LEFT_PAREN, "(", nil, 1}
+	tok0 := token.Token{token.LEFT_PAREN, "(", nil, 1}
 	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
 	tok2 := token.Token{token.PLUS, "+", nil, 1}
 	tok3 := token.Token{token.STRING, "\"12\"", "\"12\"", 1}
-	tok4 := token.Token{token.EOF, "", nil, 2}
+	tok4 := token.Token{token.RIGHT_PAREN, ")", nil, 1}
+	tok5 := token.Token{token.EOF, "", nil, 2}
 
-	tokens := []token.Token{tok11, tok1, tok2, tok3, tok4}
+	tokens := []token.Token{tok0, tok1, tok2, tok3, tok4, tok5}
 
 	loxP := New(tokens)
 
