@@ -78,11 +78,25 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 	}
 
 	if b.Operator.Type == token.PLUS { // TODO:
-		numL, numR, err := checkNumberOperands(b.Operator.Type, left, right)
-		if err != nil {
-			return nil, err
+
+		switch L := left.(type) {
+		case float64:
+			R, ok := right.(float64)
+			if !ok {
+				msg := fmt.Sprint("right exp = (", right, ") is not numbers, the operation (", token.TypeNames[b.Operator.Type], ") can not be performed")
+				return nil, errors.New(msg)
+			}
+			return L + R, nil
+
+		case string: // TODO:
+			R, ok := right.(string)
+			if !ok {
+				msg := fmt.Sprint("right exp = (", right, ") is not string, the operation (", token.TypeNames[b.Operator.Type], ") can not be performed")
+				return nil, errors.New(msg)
+			}
+			return L + R, nil // TODO:
+
 		}
-		return numL + numR, nil
 
 	} else {
 		numL, numR, err := checkNumberOperands(b.Operator.Type, left, right)
