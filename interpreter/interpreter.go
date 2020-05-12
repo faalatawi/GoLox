@@ -24,12 +24,6 @@ func Interpret(e ast.Expr) (interface{}, error) {
 	return value, nil
 }
 
-// Check list:
-// ast.Binary
-// ast.Literal Done
-// ast.Unary Done
-// ast.Grouping Done
-
 func evaluate(e ast.Expr) (interface{}, error) {
 	switch t := e.(type) {
 
@@ -77,7 +71,7 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 		return nil, errR
 	}
 
-	if b.Operator.Type == token.PLUS { // TODO:
+	if b.Operator.Type == token.PLUS {
 
 		switch L := left.(type) {
 		case float64:
@@ -88,13 +82,13 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 			}
 			return L + R, nil
 
-		case string: // TODO:
+		case string:
 			R, ok := right.(string)
 			if !ok {
 				msg := fmt.Sprint("right exp = (", right, ") is not string, the operation (", token.TypeNames[b.Operator.Type], ") can not be performed")
 				return nil, errors.New(msg)
 			}
-			return L + R, nil // TODO:
+			return L + R, nil
 
 		}
 
@@ -119,7 +113,7 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 
 func checkNumberOperands(op token.Type, left, right interface{}) (float64, float64, error) {
 	numL, okL := left.(float64)
-	numR, okR := left.(float64)
+	numR, okR := right.(float64)
 
 	if !okL && !okR {
 		msg := fmt.Sprint("Both (", left, ", ", right, ") are not numbers, the operation (", token.TypeNames[op], ") can not be performed")
@@ -147,5 +141,15 @@ func isTruthy(obj interface{}) bool {
 }
 
 func Test() {
+	tmp := ast.Binary{
+		Left:     ast.Literal{Value: float64(16)},
+		Operator: token.Token{Type: token.MINUS, Lexeme: "+", Literal: nil, Line: 1},
+		Right:    ast.Literal{Value: float64(24)},
+	}
+
+	out, err := evaluateBinary(tmp)
+
+	fmt.Println(out)
+	fmt.Println(err)
 
 }

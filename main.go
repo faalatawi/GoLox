@@ -6,13 +6,10 @@
 
 package main
 
-import (
-	"GoLox/interpreter"
-	"GoLox/scanner"
-)
+import "GoLox/interpreter"
 
 func main() {
-	scanner.Test()
+	// scanner.Test()
 	// parser.Test()
 	// ast.Test()
 	interpreter.Test()
