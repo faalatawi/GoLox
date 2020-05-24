@@ -8,11 +8,9 @@ package interpreter
 
 import (
 	"GoLox/ast"
-	"fmt"
-
-	// loxErr "GoLox/error"
 	"GoLox/token"
 	"errors"
+	"fmt"
 )
 
 // Interpret is : The interpreter of lox
@@ -92,6 +90,12 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 
 		}
 
+	} else if b.Operator.Type == token.EQUAL_EQUAL {
+		return left == right, nil
+
+	} else if b.Operator.Type == token.BANG_EQUAL {
+		return left != right, nil
+
 	} else {
 		numL, numR, err := checkNumberOperands(b.Operator.Type, left, right)
 		if err != nil {
@@ -106,6 +110,18 @@ func evaluateBinary(b ast.Binary) (interface{}, error) {
 
 		case token.STAR:
 			return numL * numR, nil
+
+		case token.GREATER:
+			return numL > numR, nil
+
+		case token.GREATER_EQUAL:
+			return numL >= numR, nil
+
+		case token.LESS:
+			return numL < numR, nil
+
+		case token.LESS_EQUAL:
+			return numL <= numR, nil
 		}
 	}
 	return nil, nil // will Never get to this
@@ -142,9 +158,9 @@ func isTruthy(obj interface{}) bool {
 
 func Test() {
 	tmp := ast.Binary{
-		Left:     ast.Literal{Value: float64(16)},
-		Operator: token.Token{Type: token.MINUS, Lexeme: "+", Literal: nil, Line: 1},
-		Right:    ast.Literal{Value: float64(24)},
+		Left:     ast.Literal{Value: "float64(16)"},
+		Operator: token.Token{Type: token.PLUS, Lexeme: "+", Literal: nil, Line: 1},
+		Right:    ast.Literal{Value: "float64(24)"},
 	}
 
 	out, err := evaluateBinary(tmp)

@@ -254,6 +254,13 @@ func (scan *Scanner) advance() string {
 	return string(c)
 }
 
+// PrintTokenList is a func to print the list
+func PrintTokenList(toks []token.Token) {
+	for _, t := range toks {
+		fmt.Println(t.ToString())
+	}
+}
+
 // Test for testing the Scanner
 func Test() {
 	source := `
