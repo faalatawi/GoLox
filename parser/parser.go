@@ -8,7 +8,7 @@ package parser
 
 import (
 	"GoLox/ast"
-	LoxErr "GoLox/error"
+	"GoLox/lox_error"
 	"GoLox/token"
 	"errors"
 	"fmt"
@@ -20,8 +20,8 @@ type Parser struct {
 	current int
 }
 
-// New to create new parser
-func New(toks []token.Token) *Parser {
+// NewParser to create new parser
+func NewParser(toks []token.Token) *Parser {
 	return &Parser{
 		tokens:  toks,
 		current: 0,
@@ -188,7 +188,7 @@ func (p *Parser) consume(tok token.Type, msg string) error {
 		p.advance()
 		return nil
 	}
-	LoxErr.AtToken(p.tokens[p.current], msg)
+	lox_error.AtToken(p.tokens[p.current], msg)
 	return errors.New(msg)
 }
 
@@ -228,8 +228,8 @@ func (p *Parser) previous() token.Token {
 	return p.tokens[p.current-1]
 }
 
-// Test is a func for testing
-func Test() {
+// TestParser is a func for testing
+func TestParser() {
 	tok0 := token.Token{token.LEFT_PAREN, "(", nil, 1}
 	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
 	tok2 := token.Token{token.PLUS, "+", nil, 1}
@@ -239,7 +239,7 @@ func Test() {
 
 	tokens := []token.Token{tok0, tok1, tok2, tok3, tok4, tok5}
 
-	loxP := New(tokens)
+	loxP := NewParser(tokens)
 
 	exp, _ := loxP.Parse()
 

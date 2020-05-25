@@ -58,7 +58,7 @@ func parenthesize(name string, exprs []Expr) string {
 	return out
 }
 
-func Test() {
+func TestPrinter() {
 	expression := Binary{
 		Left: Unary{
 			Operator: token.Token{

@@ -48,7 +48,7 @@ func runPrompt() {
 
 		scanner.PrintTokenList(toks)
 
-		lox_parser := parser.New(toks)
+		lox_parser := parser.NewParser(toks)
 
 		exp, err := lox_parser.Parse()
 		if err != nil {

@@ -156,7 +156,7 @@ func isTruthy(obj interface{}) bool {
 	}
 }
 
-func Test() {
+func TestInterpreter() {
 	tmp := ast.Binary{
 		Left:     ast.Literal{Value: "float64(16)"},
 		Operator: token.Token{Type: token.PLUS, Lexeme: "+", Literal: nil, Line: 1},

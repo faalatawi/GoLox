@@ -4,7 +4,7 @@
  you can find it in the LICENSE file.
 */
 
-package error
+package lox_error
 
 import (
 	"GoLox/token"

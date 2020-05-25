@@ -7,7 +7,7 @@
 package scanner
 
 import (
-	loxErr "GoLox/error"
+	"GoLox/lox_error"
 	"GoLox/token"
 	"fmt"
 	"strconv"
@@ -128,7 +128,7 @@ func (scan *Scanner) scanToken() {
 			scan.identifier()
 		} else {
 			message := fmt.Sprintf("Unexpected character. :  %s", c)
-			loxErr.AtLine(scan.line, message)
+			lox_error.AtLine(scan.line, message)
 		}
 	}
 }
@@ -206,7 +206,7 @@ func (scan *Scanner) string() {
 
 	//Unterminated string.
 	if scan.isAtEnd() {
-		loxErr.AtLine(scan.line, "Unterminated string.") // TODO ERROR
+		lox_error.AtLine(scan.line, "Unterminated string.") // TODO ERROR
 		return
 	}
 
@@ -261,8 +261,8 @@ func PrintTokenList(toks []token.Token) {
 	}
 }
 
-// Test for testing the Scanner
-func Test() {
+// TestScanner for testing the Scanner
+func TestScanner() {
 	source := `
 	    var x = 12.1
 	    if else
