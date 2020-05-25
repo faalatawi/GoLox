@@ -7,7 +7,6 @@
 package main
 
 import (
-	"GoLox/ast"
 	"GoLox/interpreter"
 	"GoLox/parser"
 	"GoLox/scanner"
@@ -46,25 +45,25 @@ func runPrompt() {
 		lox_scanner := scanner.NewScanner(line)
 		toks := lox_scanner.ScanTokens()
 
-		scanner.PrintTokenList(toks)
+		// scanner.PrintTokenList(toks)
 
 		lox_parser := parser.NewParser(toks)
 
-		exp, err := lox_parser.Parse()
+		stmts, err := lox_parser.Parse()
 		if err != nil {
 			fmt.Println(err)
 			panic("error")
 		}
 
-		fmt.Println(ast.Print(exp))
+		// fmt.Println(ast.Print(exp))
 
-		value, errInter := interpreter.Interpret(exp)
+		errInter := interpreter.Interpret(stmts)
 		if errInter != nil {
 			fmt.Println(errInter)
 			panic("error")
 		}
 
-		fmt.Println("==> value: ", value, "\n\n")
+		// fmt.Println("==> value: ", value, "\n\n")
 
 	}
 }

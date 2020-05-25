@@ -14,17 +14,20 @@ import (
 )
 
 // Interpret is : The interpreter of lox
-func Interpret(e ast.Expr) (interface{}, error) {
-	value, err := evaluate(e)
-	if err != nil {
-		return nil, err
+func Interpret(stmts []ast.Stmt) error {
+	for _, s := range stmts {
+		_, err := evaluate(s)
+		if err != nil {
+			return err
+		}
 	}
-	return value, nil
+	return nil
 }
 
-func evaluate(e ast.Expr) (interface{}, error) {
-	switch t := e.(type) {
+func evaluate(node ast.Node) (interface{}, error) {
+	switch t := node.(type) {
 
+	/*		Expr	*/
 	case ast.Binary:
 		return evaluateBinary(t)
 
@@ -54,6 +57,22 @@ func evaluate(e ast.Expr) (interface{}, error) {
 			return !isTruthy(right), nil
 
 		}
+	// ================================================================
+	/*    Stmt    */
+	case ast.ExpressionStatement:
+		_, err := evaluate(t.Expression)
+		if err != nil {
+			return nil, err
+		}
+		return nil, nil
+
+	case ast.PrintStatement:
+		value, err := evaluate(t.Value)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(value) // TODO: stringify????
+		return nil, nil
 	}
 	return nil, nil // will Never get to this
 }

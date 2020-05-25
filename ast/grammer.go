@@ -11,6 +11,8 @@ import (
 	"fmt"
 )
 
+type Node interface{} // root for all ast types (Expr, Stmt)
+
 type Expr interface {
 	isExpr() bool
 }
@@ -42,7 +44,8 @@ type Unary struct {
 
 func (u Unary) isExpr() bool { return true }
 
-// ==================================================
+// ===================================================
+/*						Stmt						*/
 
 type Stmt interface {
 	isStmt() bool

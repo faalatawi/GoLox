@@ -27,23 +27,18 @@ func NewParser(toks []token.Token) *Parser {
 	}
 }
 
-/* old Parser*/
-// // Parse to Parse
-// func (p *Parser) Parse() (ast.Expr, error) {
-// 	exp, err := p.expression()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return exp, nil
-// }
-
 // program   → statement* EOF
 // Parse to Parse
 func (p *Parser) Parse() ([]ast.Stmt, error) {
 	var statementsList []ast.Stmt
 
 	for !p.isAtEnd() {
-		statementsList = append(statementsList, p.statement()) // TODO: error
+		s, err := p.statement()
+		if err != nil {
+			return nil, err
+		}
+
+		statementsList = append(statementsList, s) // TODO: error
 	}
 
 	return statementsList, nil
