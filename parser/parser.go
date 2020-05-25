@@ -11,7 +11,6 @@ import (
 	"GoLox/lox_error"
 	"GoLox/token"
 	"errors"
-	"fmt"
 )
 
 // Parser is Lox parser
@@ -28,21 +27,73 @@ func NewParser(toks []token.Token) *Parser {
 	}
 }
 
+/* old Parser*/
+// // Parse to Parse
+// func (p *Parser) Parse() (ast.Expr, error) {
+// 	exp, err := p.expression()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return exp, nil
+// }
+
+// program   → statement* EOF
 // Parse to Parse
-func (p *Parser) Parse() (ast.Expr, error) {
-	exp, err := p.expression()
+func (p *Parser) Parse() ([]ast.Stmt, error) {
+	var statementsList []ast.Stmt
+
+	for !p.isAtEnd() {
+		statementsList = append(statementsList, p.statement()) // TODO: error
+	}
+
+	return statementsList, nil
+}
+
+// statement → exprStmt | printStmt
+func (p *Parser) statement() (ast.Stmt, error) {
+	if p.match(token.PRINT) {
+		return p.printStatement()
+	}
+
+	return p.expressionStatement()
+}
+
+// printStmt → "print" expression ";"
+func (p *Parser) printStatement() (ast.Stmt, error) {
+	value, err := p.expression()
 	if err != nil {
 		return nil, err
 	}
-	return exp, nil
+
+	conErr := p.consume(token.SEMICOLON, "Expect ';' after value.")
+	if conErr != nil {
+		return nil, conErr
+	}
+
+	return ast.PrintStatement{Value: value}, nil
 }
 
-// 1)  expression -> equality ;
+//exprStmt  → expression ";"
+func (p *Parser) expressionStatement() (ast.Stmt, error) {
+	value, err := p.expression()
+	if err != nil {
+		return nil, err
+	}
+
+	conErr := p.consume(token.SEMICOLON, "Expect ';' after value.")
+	if conErr != nil {
+		return nil, conErr
+	}
+
+	return ast.ExpressionStatement{Expression: value}, nil
+}
+
+//   expression -> equality ;
 func (p *Parser) expression() (ast.Expr, error) {
 	return p.equality()
 }
 
-// 2)  equality -> comparison ( ( "!=" | "==" ) comparison )*
+//   equality -> comparison ( ( "!=" | "==" ) comparison )*
 func (p *Parser) equality() (ast.Expr, error) {
 	expr, err := p.comparison()
 	if err != nil {
@@ -230,18 +281,18 @@ func (p *Parser) previous() token.Token {
 
 // TestParser is a func for testing
 func TestParser() {
-	tok0 := token.Token{token.LEFT_PAREN, "(", nil, 1}
-	tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
-	tok2 := token.Token{token.PLUS, "+", nil, 1}
-	tok3 := token.Token{token.STRING, "\"12\"", "\"12\"", 1}
-	tok4 := token.Token{token.RIGHT_PAREN, ")", nil, 1}
-	tok5 := token.Token{token.EOF, "", nil, 2}
+	// tok0 := token.Token{token.LEFT_PAREN, "(", nil, 1}
+	// tok1 := token.Token{token.NUMBER, "4", 4.0, 1}
+	// tok2 := token.Token{token.PLUS, "+", nil, 1}
+	// tok3 := token.Token{token.STRING, "\"12\"", "\"12\"", 1}
+	// tok4 := token.Token{token.RIGHT_PAREN, ")", nil, 1}
+	// tok5 := token.Token{token.EOF, "", nil, 2}
 
-	tokens := []token.Token{tok0, tok1, tok2, tok3, tok4, tok5}
+	// tokens := []token.Token{tok0, tok1, tok2, tok3, tok4, tok5}
 
-	loxP := NewParser(tokens)
+	// loxP := NewParser(tokens)
 
-	exp, _ := loxP.Parse()
+	// exp, _ := loxP.Parse()
 
-	fmt.Println(ast.Print(exp))
+	// fmt.Println(ast.Print(exp))
 }
